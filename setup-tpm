@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+tpm_dir=${HOME}/.tmux/plugins/tpm
+
+# If the TPM has not been downloaded previously, we have some setup to do
+[ ! -d "${tpm_dir}" ]
+first_run=$?
+
+# Download TPM if necessary
+if (( $first_run == 0 )); then
+    echo "Cloning the repo"
+    git clone https://github.com/tmux-plugins/tpm "${tpm_dir}"
+fi
+
+# Inside TMUX session we need to activate TPM prior to installing plugins
+if [ $TMUX ]; then
+    ${tpm_dir}/tpm
+fi
+
+if (( $first_run == 0 )); then
+    echo "Installing plugins"
+    ${tpm_dir}/bin/install_plugins
+fi
